@@ -10,51 +10,6 @@
 	// $html = file_get_contents("http://visional.jp");
 	// $stylesheet = file_get_contents("http://visional.jp/css/style.css" );
 
-	/**
-	/* 暗号化関数
-	**/
-	function encryptedParam($input,$key = KEY_DEFAULT)
-	{
-	    $input = serialize($input);
-
-	    $td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_ECB,'');
-
-	    $ks = mcrypt_enc_get_key_size($td);
-	    $key = substr(md5($key), 0, $ks);
-
-	    $ivsize = mcrypt_enc_get_iv_size($td);
-	    $iv = substr(md5($key), 0, $ivsize);
-
-	    mcrypt_generic_init($td, $key, $iv);
-	    $encrypted_data = mcrypt_generic($td, $input);
-
-	    mcrypt_generic_deinit($td);
-	    mcrypt_module_close($td);
-
-	    return $encrypted_data;
-	}
-
-	/**
-	/* 複合化関数
-	**/
-	function decryptedParam($input,$key = KEY_DEFAULT)
-	{
-	    $td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_ECB,'');
-	    
-	    $ks = mcrypt_enc_get_key_size($td);
-	    $key = substr(md5($key), 0, $ks);
-
-	    $ivsize = mcrypt_enc_get_iv_size($td);
-	    $iv = substr(md5($key), 0, $ivsize);
-
-	    mcrypt_generic_init($td, $key, $iv);
-	    $decrypted_data = mdecrypt_generic($td, $input);
-
-	    mcrypt_generic_deinit($td);
-	    mcrypt_module_close($td);
-
-	    return unserialize($decrypted_data);
-	}
 	
 	// -----------------------------------------
 	// 登録データ
@@ -102,13 +57,16 @@
 	$vote_num = $_GET['vote_num'];
 
 	$title 				= '『'.$page_title.'』受講票';
-	$title_company 		= '株式会社セミナーインフォ';
+	$title_company 		= $_GET['title_company'];
+	// $title_company 		= '株式会社セミナーインフォ';
+
+	$img 				= $_GET['img'];
+	// $img 				= 'http://www.finance-forum.jp/forum_2015_tokyo/img/map.jpg';
+
 	$contact_title 		= '株式会社セミナーインフォ';
 	$contact_team 		= 'プロモーション事業部';
 	$contact_tel 		= '03-3239-6544';
 	$contact_mail 		= 'customer@seminar-info.jp';
-	$img 				= 'http://www.finance-forum.jp/forum_2015_tokyo/img/map.jpg';
-
 
 	// HTML
 	$html = '<div style="border-top:1px solid #333;">';
@@ -125,50 +83,51 @@
 				$html.='</div>';
 			$html.='</div>';
 			$html.='<div id="summary" style="border-bottom:1px solid #333">';
-				$html.='<div style="width:16%; height:20px; padding:50px 2% 48px 2%; float:left; border-right:1px solid #333;border-bottom:1px solid #333;">';
+				$html.='<div style="width:16%; height:20px; padding:30px 2% 30px 2%; float:left; border-right:1px solid #000;border-bottom:1px solid #333;">';
 					$html.='お申し込み内容';
 				$html.='</div>';
-				$html.='<div style="float:left; border-bottom:1px solid #333;">';
+				$html.='<div style="float:left; border-bottom:1px solid #000;">';
 					$html.='<div style="border-bottom:1px solid #333;">';
 						$html.='<div style="width:20%; padding:2% 0; text-align:center; float:left;">';
 							$html.='日時';
 						$html.='</div>';
-						$html.='<div id="date" style="width:77.81%; padding:2% 0 2% 2%; float:left; border-left:1px solid #333;">';
+						$html.='<div id="date" style="width:77.81%; padding:2% 0 2% 2%; float:left; border-left:1px solid #000;">';
 							$html.=$date1.$week.$start_time.$end_time;
 						$html.='</div>';
 					$html.='</div>';
-					$html.='<div style="border-bottom:1px solid #333">';
-						$html.='<div style="width:20%; padding:2% 0; text-align:center; float:left;">';
+					$html.='<div style="">';
+						$html.='<div style="width:20%; height:18px; padding:2% 0; text-align:center; float:left;">';
 							$html.='会場';
 						$html.='</div>';
-						$html.='<div id="hall" style="width:77.81%; padding:2% 0 2% 2%; float:left; border-left:1px solid #333;">';
+						$html.='<div id="hall" style="width:77.81%; height:18px; padding:2% 0 2% 2%; float:left; border-left:1px solid #000;">';
 							$html.=$hall;
 						$html.='</div>';
 					$html.='</div>';
-					$html.='<div style="">';
-						$html.='<div style="width:20%; padding:2% 0; text-align:center; float:left;">';
-							$html.='セッション名';
-						$html.='</div>';
-						$html.='<div id="session_name" style="width:77.81%; padding:2% 0 2% 2%; float:left; border-left:1px solid #333;">';
-							$html.=$session_name;
-						$html.='</div>';
-					$html.='</div>';
+					// $html.='<div style="">';
+					// 	$html.='<div style="width:20%; padding:2% 0; text-align:center; float:left;">';
+					// 		$html.='セッション名';
+					// 	$html.='</div>';
+					// 	$html.='<div id="session_name" style="width:77.81%; padding:2% 0 2% 2%; float:left; border-left:1px solid #333;">';
+					// 		$html.=$session_name;
+					// 	$html.='</div>';
+					// $html.='</div>';
 				$html.='</div>';
 
-				$html.='<div style="width:16%; height:20px; padding:33px 2% 30px 2%; float:left; border-right:1px solid #333;">';
+				$html.='<div style="width:20%; height:14px; padding:2% 0; float:left; text-align:center; border-right:1px solid #333;">';
 					$html.='注意事項';
 				$html.='</div>';
 				$html.='<div style="display:block; position:relative; border-bottom:1px solid #333;">';
 					$html.='<p style="width:98%;margin-left:10px; font-size:10px; font-weight:bold; line-height:20px; letter-spacing:0.5px;">';
-						$html.='(1）こちらの受講票をセミナー会場受付にお持ちください。<br>(2）複数セミナーにお申し込みの場合は、セミナー毎に受講票が必要です。<br>(3)【基調講演】にお申し込みの方は、メイン会場(A)が満席の場合は、サブ会場(B)へのご案内となります。';
+						// $html.='(1）こちらの受講票をセミナー会場受付にお持ちください。<br>(2）複数セミナーにお申し込みの場合は、セミナー毎に受講票が必要です。<br>(3)【基調講演】にお申し込みの方は、メイン会場(A)が満席の場合は、サブ会場(B)へのご案内となります。';
+						$html.='(1）こちらの受講票をセミナー会場受付にお持ちください。';
 					$html.='</p>';
 				$html.='</div>';
-
-				$html.='<div style="width:16%; height:30px; padding:12% 2% 10% 2%; float:left; border-right:1px solid #333;">';
+				$html.='<div style="clear:both;"></div>';
+				$html.='<div style="display:width:20%; padding:5% 0 2% 0; float:left; text-align:center; border-right:1px solid #333;">';
 					$html.='会場アクセス';
 				$html.='</div>';
 				$html.='<div style="float:left;">';
-					$html.='<p style="width:98%;margin-left:10px; font-size:12px; font-weight:bold; line-height:21px; letter-spacing:0.8px;">';
+					$html.='<p style="width:98%; height:calc(100%); margin-left:10px; font-size:12px; font-weight:bold; line-height:21px; letter-spacing:0.8px;">';
 						$html.=$hall_address.'<br>';
 						$html.=$hall_access;
 					$html.='</p>';
